@@ -190,7 +190,7 @@
     </table>
 </div>
 
-<!-- НАЧАЛО БЛОКА: ФОРМА ЗАКАЗА ФИНАНСОВОЙ МОДЕЛИ -->
+<!-- НАЧАЛО БЛОКА: СВЯЗАТЬСЯ С КОНСУЛЬТАНТОМ -->
 <style>
     /* Разделительная линия между блоками */
     .form-divider {
@@ -200,8 +200,8 @@
         border-top: 2px solid #ecf0f1;
     }
 
-    /* Контейнер формы, полностью дублирующий стиль калькулятора */
-    .order-container {
+    /* Контейнер кнопки, полностью дублирующий стиль калькулятора */
+    .consult-container {
         max-width: 650px;
         background: #fff;
         margin: 0 auto 40px auto;
@@ -209,182 +209,65 @@
         border-radius: 8px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         box-sizing: border-box;
+        text-align: center;
     }
 
-    .order-container h3 {
+    .consult-container h3 {
         color: #2c3e50;
         margin-top: 0;
         border-bottom: 2px solid #ecf0f1;
-        padding-bottom: 10px;
+        padding-bottom: 15px;
         font-family: Arial, sans-serif;
     }
 
-    .order-form-group {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 14px;
-    }
-
-    .order-container label {
+    .consult-text {
         font-family: Arial, sans-serif;
-        font-size: 14px;
-        font-weight: bold;
-        color: #333;
-        max-width: 65%;
+        font-size: 15px;
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 25px;
     }
 
-    .order-container input[type="text"],
-    .order-container input[type="tel"],
-    .order-container input[type="email"] {
-        width: 30%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        text-align: left;
-        font-size: 14px;
-        box-sizing: border-box;
-    }
-
-    /* Фокус на полях ввода */
-    .order-container input:focus {
-        border-color: #2f80ed;
-        outline: none;
-    }
-
-    /* Блок политики конфиденциальности */
-    .policy-wrapper {
-        display: flex;
-        align-items: flex-start;
-        margin-top: 20px;
-        margin-bottom: 15px;
-    }
-
-    .policy-wrapper input[type="checkbox"] {
-        width: auto;
-        margin-right: 12px;
-        margin-top: 2px;
-        cursor: pointer;
-    }
-
-    .policy-wrapper label {
-        font-size: 12px;
-        color: #64748b;
-        font-weight: normal;
-        line-height: 1.4;
-        max-width: 100%;
-        cursor: pointer;
-    }
-
-    /* Кнопка отправки */
-    .btn-submit-order {
+    /* Стильная кнопка перехода на Google Форму */
+    .btn-consult {
+        display: inline-block;
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         background-color: #2f80ed;
         color: white;
         border: none;
         border-radius: 4px;
         font-size: 16px;
         font-weight: bold;
+        text-decoration: none;
+        box-sizing: border-box;
+        transition: background 0.2s, transform 0.1s;
         cursor: pointer;
-        margin-top: 10px;
-        transition: background 0.2s;
     }
 
-    .btn-submit-order:hover {
+    .btn-consult:hover {
         background-color: #1b62c4;
     }
 
-    .btn-submit-order:disabled {
-        background-color: #94a3b8;
-        cursor: not-allowed;
+    .btn-consult:active {
+        transform: scale(0.99);
     }
 </style>
 
 <hr class="form-divider">
 
-<div class="order-container">
-    <h3>Связаться с консультантом</h3>
-    <form id="finModelForm" onsubmit="submitOrderForm(event)">
-        <div class="order-form-group">
-            <label for="usr_fname">Имя:</label>
-            <input type="text" id="usr_fname" required placeholder="Иван">
-        </div>
-        <div class="order-form-group">
-            <label for="usr_lname">Фамилия:</label>
-            <input type="text" id="usr_lname" required placeholder="Иванов">
-        </div>
-        <div class="order-form-group">
-            <label for="usr_comp">Компания:</label>
-            <input type="text" id="usr_comp" required placeholder="ООО Застройщик">
-        </div>
-        <div class="order-form-group">
-            <label for="usr_phone">Телефон:</label>
-            <input type="tel" id="usr_phone" required placeholder="+375 (29) 111-22-33">
-        </div>
-        <div class="order-form-group">
-            <label for="usr_email">Электронная почта:</label>
-            <input type="email" id="usr_email" required placeholder="example@mail.com">
-        </div>
-
-        <div class="policy-wrapper">
-            <input type="checkbox" id="policy_agree" onchange="toggleOrderButton()" required>
-            <label for="policy_agree">
-                Я ознакомился с политикой конфиденциальности и выражаю согласие на обработку персональных данных ООО Альянс Кредиторов 30
-            </label>
-        </div>
-
-        <button type="submit" id="btnSubmitOrder" class="btn-submit-order" disabled>Отправить заявку</button>
-    </form>
-</div>
-
-<script>
-// Управление доступностью кнопки отправки (чекбокс)
-function toggleOrderButton() {
-    const checkbox = document.getElementById('policy_agree');
-    const button = document.getElementById('btnSubmitOrder');
-    button.disabled = !checkbox.checked;
-}
-
-// Обработка отправки формы на внешний сервер Google Apps Script
-function submitOrderForm(event) {
-    event.preventDefault();
+<div class="consult-container">
+    <h3>Заказать расчет финансовой модели</h3>
+    <p class="consult-text">
+        Нужен детальный расчет или профессиональная консультация по мезонинному финансированию? Нажмите на кнопку ниже, оставьте ваши контактные данные в форме, и эксперт ООО «Альянс Кредиторов 30» свяжется с вами в ближайшее время.
+    </p>
     
-    const button = document.getElementById('btnSubmitOrder');
-    button.disabled = true;
-    button.innerText = "Отправка...";
-
-    // Собираем данные клиента — телефон теперь отправляется как есть
-    const orderData = {
-        firstName: document.getElementById('usr_fname').value,
-        lastName: document.getElementById('usr_lname').value,
-        company: document.getElementById('usr_comp').value,
-        phone: document.getElementById('usr_phone').value,
-        email: document.getElementById('usr_email').value
-    };
-
-    // ВСТАВЬТЕ СЮДА ВАШУ АКТУАЛЬНУЮ ССЫЛКУ ИЗ ВТОРОГО ШАГА (ОНА ДОЛЖНА ЗАКАНЧИВАТЬСЯ НА /exec)
-    const googleWebAppUrl = "https://script.google.com/macros/s/AKfycbxFL0VbE15PObVX61xzXteE4qxwrPvDrsPAMUUSibKBNYEpKIhzffc3i46jqyoqeNeNtA/exec";
-
-    // Отправляем данные методом POST на сервер Google через URL-параметры для обхода CORS
-    fetch(googleWebAppUrl + "?data=" + encodeURIComponent(JSON.stringify(orderData)), {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache"
-    })
-    .then(function() {
-        alert("Спасибо, " + orderData.firstName + "! Ваша заявка успешно отправлена.");
-        document.getElementById('finModelForm').reset();
-        button.innerText = "Отправить заявку";
-        toggleOrderButton();
-    })
-    .catch(function(error) {
-        alert("Ошибка сети при отправке: " + error.message);
-        button.disabled = false;
-        button.innerText = "Отправить заявку";
-    });
-}
-</script>
+    <!-- ВСТАВЬТЕ ССЫЛКУ НА ВАШУ GOOGLE ФОРМУ В АТРИБУТ href ВМЕСТО НАШЕЙ ЗАГЛУШКИ -->
+    <a href="https://forms.gle/Ldwgp4Tk1BdU9RRy7" class="btn-consult">
+        Связаться с консультантом
+    </p>
+</div>
+<!-- КОНЕЦ БЛОКА: СВЯЗАТЬСЯ С КОНСУЛЬТАНТОМ -->
 
 <script>
 function calculateMezzanine() {
