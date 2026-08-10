@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор стоимости мезонинного займа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 650px;
+            background: #fff;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        h3 {
+            margin-top: 25px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            max-width: 65%;
+        }
+        input {
+            width: 30%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: right;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #219653;
+        }
+        .result-table {
+            width: 100%;
+            margin-top: 25px;
+            border-collapse: collapse;
+        }
+        .result-table th, .result-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .result-table th {
+            background-color: #f8f9fa;
+        }
+        .result-value {
+            text-align: right;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .highlight {
+            background-color: #e8f8f5;
+        }
+        .highlight td {
+            color: #27ae60 !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Калькулятор мезонинного займа</h2>
+    
+    <div class="form-group">
+        <label>1. Сметная стоимость строительства (BYN/руб):</label>
+        <input type="number" id="cost" value="1000000">
+    </div>
+    <div class="form-group">
+        <label>2. Доля собственных средств для банка (%):</label>
+        <input type="number" id="bankShare" value="30" step="0.1">
+    </div>
+    <div class="form-group">
+        <label>3. Сумма имеющихся собственных средств:</label>
+        <input type="number" id="ownFunds" value="100000">
+    </div>
+    <div class="form-group">
+        <label>4. Срок сдачи объекта (месяцев):</label>
+        <input type="number" id="buildPeriod" value="24">
+    </div>
+    <div class="form-group">
+        <label>5. Доп. время для полной продажи (месяцев):</label>
+        <input type="number" id="salePeriod" value="12">
+    </div>
+    <div class="form-group">
+        <label>6. Наценка (%):</label>
+        <input type="number" id="markup" value="100">
+    </div>
+    <div class="form-group">
+        <label>7. Операционные расходы за весь период строительства и продажи:</label>
+        <input type="number" id="opEx" value="200000">
+    </div>
+    <div class="form-group">
+        <label>8. Ставка по мезонину (% годовых):</label>
+        <input type="number" id="rate" value="30" step="0.1">
+    </div>
+    <div class="form-group">
+        <label>9. Комиссия агентов по недвижимости (%):</label>
+        <input type="number" id="agentCom" value="2" step="0.1">
+    </div>
+
+    <button onclick="calculateMezzanine()">Рассчитать стоимость займа</button>
+
+    <h3>Результаты расчета</h3>
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th>Показатель</th>
+                <th style="text-align: right;">Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Требуемый объем собственных средств для банка</td>
+                <td class="result-value" id="resBankReq">0.00</td>
+            </tr>
+            <tr class="highlight">
+                <td>Сумма мезонинного займа (Тело)</td>
+                <td class="result-value" id="resMezzBody">0.00</td>
+            </tr>
+            <tr>
+                <td>Общий срок пользования займом (месяцев)</td>
+                <td class="result-value" id="resTotalMonths">0</td>
+            </tr>
+            <tr>
+                <td>Начисленные проценты по займу</td>
+                <td class="result-value" id="resInterest">0.00</td>
+            </tr>
+            <tr>
+                <td>Всего к возврату (тело + проценты)</td>
+                <td class="result-value" id="resTotalReturn">0.00</td>
+            </tr>
+            <tr>
+                <td>Выручка от продаж (общая)</td>
+                <td class="result-value" id="resRevenue">0.00</td>
+            </tr>
+            <tr>
+                <td>Комиссия агентов, всего</td>
+                <td class="result-value" id="resAgentSum">0.00</td>
+            </tr>
+            <tr>
+                <td>Прибыль до вычета процентов по займу</td>
+                <td class="result-value" id="resOpProfit">0.00</td>
+            </tr>
+            <tr class="highlight">
+                <td>Прибыль застройщика (до налогообложения)</td>
+                <td class="result-value" id="resNetProfit">0.00</td>
+            </tr>
+            <tr>
+                <td>Доля процентов по займу в прибыли (до налогообложения)</td>
+                <td class="result-value" id="resShare">0.00%</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- НАЧАЛО БЛОКА: ФОРМА ЗАКАЗА ФИНАНСОВОЙ МОДЕЛИ -->
+<style>
+    /* Разделительная линия между блоками */
+    .form-divider {
+        max-width: 650px;
+        margin: 40px auto 30px auto;
+        border: 0;
+        border-top: 2px solid #ecf0f1;
+    }
+
+    /* Контейнер формы, полностью дублирующий стиль калькулятора */
+    .order-container {
+        max-width: 650px;
+        background: #fff;
+        margin: 0 auto 40px auto;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-sizing: border-box;
+    }
+
+    .order-container h3 {
+        color: #2c3e50;
+        margin-top: 0;
+        border-bottom: 2px solid #ecf0f1;
+        padding-bottom: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    .order-form-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .order-container label {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #333;
+        max-width: 65%;
+    }
+
+    .order-container input[type="text"],
+    .order-container input[type="tel"],
+    .order-container input[type="email"] {
+        width: 30%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: left;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    /* Фокус на полях ввода */
+    .order-container input:focus {
+        border-color: #2f80ed;
+        outline: none;
+    }
+
+    /* Блок политики конфиденциальности */
+    .policy-wrapper {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+
+    .policy-wrapper input[type="checkbox"] {
+        width: auto;
+        margin-right: 12px;
+        margin-top: 2px;
+        cursor: pointer;
+    }
+
+    .policy-wrapper label {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: normal;
+        line-height: 1.4;
+        max-width: 100%;
+        cursor: pointer;
+    }
+
+    /* Кнопка отправки */
+    .btn-submit-order {
+        width: 100%;
+        padding: 12px;
+        background-color: #2f80ed;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.2s;
+    }
+
+    .btn-submit-order:hover {
+        background-color: #1b62c4;
+    }
+
+    .btn-submit-order:disabled {
+        background-color: #94a3b8;
+        cursor: not-allowed;
+    }
+</style>
+
+<hr class="form-divider">
+
+<div class="order-container">
+    <h3>Связаться с консультантом</h3>
+    <form id="finModelForm" onsubmit="submitOrderForm(event)">
+        <div class="order-form-group">
+            <label for="usr_fname">Имя:</label>
+            <input type="text" id="usr_fname" required placeholder="Иван">
+        </div>
+        <div class="order-form-group">
+            <label for="usr_lname">Фамилия:</label>
+            <input type="text" id="usr_lname" required placeholder="Иванов">
+        </div>
+        <div class="order-form-group">
+            <label for="usr_comp">Компания:</label>
+            <input type="text" id="usr_comp" required placeholder="ООО Застройщик">
+        </div>
+        <div class="order-form-group">
+            <label for="usr_phone">Телефон:</label>
+            <input type="tel" id="usr_phone" required placeholder="+375 (29) 111-22-33">
+        </div>
+        <div class="order-form-group">
+            <label for="usr_email">Электронная почта:</label>
+            <input type="email" id="usr_email" required placeholder="example@mail.com">
+        </div>
+
+        <div class="policy-wrapper">
+            <input type="checkbox" id="policy_agree" onchange="toggleOrderButton()" required>
+            <label for="policy_agree">
+                Я ознакомился с политикой конфиденциальности и выражаю согласие на обработку персональных данных ООО Альянс Кредиторов 30
+            </label>
+        </div>
+
+        <button type="submit" id="btnSubmitOrder" class="btn-submit-order" disabled>Отправить заявку</button>
+    </form>
+</div>
+
+<script>
+// Управление доступностью кнопки отправки
+function toggleOrderButton() {
+    const checkbox = document.getElementById('policy_agree');
+    const button = document.getElementById('btnSubmitOrder');
+    button.disabled = !checkbox.checked;
+}
+
+// Обработка отправки формы на внешний сервер Google Apps Script
+function submitOrderForm(event) {
+    event.preventDefault();
+    
+    const button = document.getElementById('btnSubmitOrder');
+    button.disabled = true;
+    button.innerText = "Отправка...";
+
+    const orderData = {
+        firstName: document.getElementById('usr_fname').value,
+        lastName: document.getElementById('usr_lname').value,
+        company: document.getElementById('usr_comp').value,
+        phone: document.getElementById('usr_phone').value,
+        email: document.getElementById('usr_email').value
+    };
+
+    // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ, ПОЛУЧЕННУЮ НА ШАГЕ 1 (ПОСЛЕ РАЗВЕРТЫВАНИЯ)
+    const googleWebAppUrl = "https://script.google.com/macros/s/AKfycbxFL0VbE15PObVX61xzXteE4qxwrPvDrsPAMUUSibKBNYEpKIhzffc3i46jqyoqeNeNtA/exec";
+
+    // Отправляем данные методом POST на сервер Google
+    fetch(googleWebAppUrl, {
+        method: "POST",
+        mode: "no-cors", // Позволяет отправлять данные без жестких ограничений безопасности браузера
+        cache: "no-cache",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderData)
+    })
+    .then(function() {
+        // Так как режим 'no-cors' не возвращает текстовый ответ, мы сразу считаем отправку успешной
+        alert("Спасибо, " + orderData.firstName + "! Ваша заявка успешно отправлена.");
+        document.getElementById('finModelForm').reset();
+        button.innerText = "Отправить заявку";
+        toggleOrderButton();
+    })
+    .catch(function(error) {
+        alert("Ошибка сети при отправке: " + error.message);
+        button.disabled = false;
+        button.innerText = "Отправить заявку";
+    });
+}
+</script>
+<!-- КОНЕЦ БЛОКА: ФОРМА ЗАКАЗА ФИНАНСОВОЙ МОДЕЛИ -->
+
+
+<script>
+function calculateMezzanine() {
+    // Получение исходных данных
+    const cost = parseFloat(document.getElementById('cost').value) || 0;
+    const bankShare = (parseFloat(document.getElementById('bankShare').value) || 0) / 100;
+    const ownFunds = parseFloat(document.getElementById('ownFunds').value) || 0;
+    const buildPeriod = parseInt(document.getElementById('buildPeriod').value) || 0;
+    const salePeriod = parseInt(document.getElementById('salePeriod').value) || 0;
+    const markup = (parseFloat(document.getElementById('markup').value) || 0) / 100;
+    const opEx = parseFloat(document.getElementById('opEx').value) || 0;
+    const rate = (parseFloat(document.getElementById('rate').value) || 0) / 100;
+    const agentCom = (parseFloat(document.getElementById('agentCom').value) || 0) / 100;
+
+    // Расчет параметров займа
+    const bankReq = cost * bankShare;
+    const mezzBody = Math.max(0, bankReq - ownFunds);
+    const totalMonths = buildPeriod + salePeriod;
+    
+    // Расчет сложных процентов с ежемесячной капитализацией
+    const totalReturn = mezzBody * Math.pow((1 + (rate / 12)), totalMonths);
+    const interest = totalReturn - mezzBody;
+
+    // Расчет выручки и расходов
+    const revenue = cost * (1 + markup);
+    const agentSum = revenue * agentCom;
+
+    // Расчет финансового результата
+    const opProfit = revenue - cost - opEx - agentSum;
+    const netProfit = opProfit - interest;
+    const share = opProfit > 0 ? (interest / opProfit) * 100 : 0;
+
+    // Вывод результатов на страницу
+    document.getElementById('resBankReq').innerText = bankReq.toFixed(2);
+    document.getElementById('resMezzBody').innerText = mezzBody.toFixed(2);
+    document.getElementById('resTotalMonths').innerText = totalMonths;
+    document.getElementById('resInterest').innerText = interest.toFixed(2);
+    document.getElementById('resTotalReturn').innerText = totalReturn.toFixed(2);
+    document.getElementById('resRevenue').innerText = revenue.toFixed(2);
+    document.getElementById('resAgentSum').innerText = agentSum.toFixed(2);
+    document.getElementById('resOpProfit').innerText = opProfit.toFixed(2);
+    document.getElementById('resNetProfit').innerText = netProfit.toFixed(2);
+    document.getElementById('resShare').innerText = share.toFixed(2) + '%';
+}
+
+// Запуск расчета при первой загрузке страницы
+window.onload = calculateMezzanine;
+</script>
+
+</body>
+</html>
