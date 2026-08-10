@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор: Займ в обмен на роялти</title>
+    <title>Калькулятор: Займ в обмен на долю в выручке (роялти)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,6 +50,24 @@
             border-radius: 4px;
             text-align: right;
             font-size: 14px;
+        }
+        /* Стиль для кнопки Расчета */
+        .btn-calc {
+            width: 100%;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+        .btn-calc:hover {
+            background-color: #219653;
         }
         .result-table {
             width: 100%;
@@ -120,24 +138,27 @@
     
     <div class="form-group">
         <label>Какую сумму хотите привлечь, руб:</label>
-        <input type="number" id="loanAmount" value="50000000" oninput="calculateRoyalty()">
+        <input type="number" id="loanAmount" value="50000000">
     </div>
     <div class="form-group">
         <label>Доля от выручки к возврату инвестору (%):</label>
-        <input type="number" id="royaltyShare" value="10" step="0.1" oninput="calculateRoyalty()">
+        <input type="number" id="royaltyShare" value="10" step="0.1">
     </div>
     <div class="form-group">
         <label>Соотношение (Тело займа + Премия) / Сумма займа:</label>
-        <input type="number" id="multiplier" value="1.7" step="0.1" oninput="calculateRoyalty()">
+        <input type="number" id="multiplier" value="1.7" step="0.1">
     </div>
     <div class="form-group">
         <label>Средняя выручка в месяц, руб:</label>
-        <input type="number" id="monthlyRevenue" value="19447000" oninput="calculateRoyalty()">
+        <input type="number" id="monthlyRevenue" value="19447000">
     </div>
     <div class="form-group">
         <label>Средняя маржинальность операций (%):</label>
-        <input type="number" id="marginShare" value="10" step="0.1" oninput="calculateRoyalty()">
+        <input type="number" id="marginShare" value="10" step="0.1">
     </div>
+
+    <!-- КНОПКА РАСЧЕТА (ДОБАВЛЕНА СЮДА) -->
+    <button class="btn-calc" onclick="calculateRoyalty()">Рассчитать параметры займа</button>
 
     <h3>Результат расчета</h3>
     <table class="result-table">
@@ -181,7 +202,7 @@
     </p>
     
     <!-- ЗАМЕНИТЕ ССЫЛКУ НИЖЕ НА ВАШУ GOOGLE ФОРМУ ДЛЯ ЭТОГО КАЛЬКУЛЯТОРА -->
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdFHnWF1AIlmGej4ZoRVCyND7bUjH2678g5amC_D22karhGOw/viewform?usp=sharing&ouid=103852536800905050278" class="btn-consult">
+    <a href="https://forms.gle" target="_blank" class="btn-consult">
         Перейти к оформлению заявки
     </a>
 </div>
@@ -206,16 +227,14 @@ function calculateRoyalty() {
     if (monthlyPayment > 0) {
         paybackPeriod = totalReturn / monthlyPayment;
         
-        // Расчет эффективной годовой ставки по формуле простых процентов для роялти
         if (paybackPeriod > 0) {
-            const totalPremiumRate = multiplier - 1; // Общая переплата в долях
+            const totalPremiumRate = multiplier - 1; 
             const years = paybackPeriod / 12;
             effectiveRate = (totalPremiumRate / years) * 100;
         }
     }
 
     if (marginShare > 0) {
-        // Какую часть от чистой маржинальной прибыли бизнеса забирает инвестор ежемесячно
         marginLoad = (royaltyShare / marginShare) * 100;
     }
 
@@ -227,7 +246,7 @@ function calculateRoyalty() {
     document.getElementById('resMarginLoad').innerText = marginLoad.toFixed(2) + '%';
 }
 
-// Первый запуск при загрузке
+// По умолчанию рассчитываем один раз при старте, чтобы таблица не была пустой
 window.onload = calculateRoyalty;
 </script>
 
