@@ -346,49 +346,27 @@ function toggleOrderButton() {
     button.disabled = !checkbox.checked;
 }
 
-// Функция проверки регулярных выражений для телефонов РБ и РФ
-function validatePhone(phone) {
-    // Удаляем все пробелы, дефисы и скобки для чистой проверки цифр
-    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
-    
-    // Регулярное выражение для РБ: +375XXXXXXXXX (всего 12 цифр)
-    const rbRegex = /^\+375\d{9}$/;
-    
-    // Регулярное выражение для РФ: +7XXXXXXXXXX (всего 11 цифр)
-    const rfRegex = /^\+7\d{10}$/;
-    
-    return rbRegex.test(cleanPhone) || rfRegex.test(cleanPhone);
-}
-
 // Обработка отправки формы на внешний сервер Google Apps Script
 function submitOrderForm(event) {
     event.preventDefault();
     
     const button = document.getElementById('btnSubmitOrder');
-    const phoneInput = document.getElementById('usr_phone').value;
-
-    // 1. ПРОВЕРКА ТЕЛЕФОНА
-    if (!validatePhone(phoneInput)) {
-        alert("Неверный формат телефона!\nПожалуйста, введите номер в формате:\n+375 (XX) XXX-XX-XX или\n+7 (XXX) XXX-XX-XX");
-        return; // Останавливаем отправку
-    }
-    
     button.disabled = true;
     button.innerText = "Отправка...";
 
-    // Собираем данные клиента
+    // Собираем данные клиента — телефон теперь отправляется как есть
     const orderData = {
         firstName: document.getElementById('usr_fname').value,
         lastName: document.getElementById('usr_lname').value,
         company: document.getElementById('usr_comp').value,
-        phone: phoneInput,
+        phone: document.getElementById('usr_phone').value,
         email: document.getElementById('usr_email').value
     };
 
-    // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ НА ВЕБ-ПРИЛОЖЕНИЕ GOOGLE ИЗ ШАГА 1
+    // ВСТАВЬТЕ СЮДА ВАШУ АКТУАЛЬНУЮ ССЫЛКУ ИЗ ВТОРОГО ШАГА (ОНА ДОЛЖНА ЗАКАНЧИВАТЬСЯ НА /exec)
     const googleWebAppUrl = "https://script.google.com/macros/s/AKfycbxFL0VbE15PObVX61xzXteE4qxwrPvDrsPAMUUSibKBNYEpKIhzffc3i46jqyoqeNeNtA/exec";
 
-    // Для надежности отправки через no-cors кодируем данные как URL-параметры
+    // Отправляем данные методом POST на сервер Google через URL-параметры для обхода CORS
     fetch(googleWebAppUrl + "?data=" + encodeURIComponent(JSON.stringify(orderData)), {
         method: "POST",
         mode: "no-cors",
