@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор: Займ в обмен на роялти</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container, .consult-container {
+            max-width: 650px;
+            background: #fff;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        .consult-container {
+            margin-top: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        h2, h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            max-width: 65%;
+        }
+        input {
+            width: 30%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: right;
+            font-size: 14px;
+        }
+        .result-table {
+            width: 100%;
+            margin-top: 25px;
+            border-collapse: collapse;
+        }
+        .result-table th, .result-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        .result-table th {
+            background-color: #f8f9fa;
+        }
+        .result-value {
+            text-align: right;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .highlight {
+            background-color: #e8f8f5;
+        }
+        .highlight td {
+            color: #27ae60 !important;
+            font-weight: bold;
+        }
+        .form-divider {
+            max-width: 650px;
+            margin: 40px auto 30px auto;
+            border: 0;
+            border-top: 2px solid #ecf0f1;
+        }
+        .consult-text {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        .btn-consult {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background-color: #2f80ed;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: background 0.2s, transform 0.1s;
+            cursor: pointer;
+        }
+        .btn-consult:hover {
+            background-color: #1b62c4;
+        }
+        .btn-consult:active {
+            transform: scale(0.99);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Займ в обмен на роялти</h2>
+    <h3>Исходные данные</h3>
+    
+    <div class="form-group">
+        <label>Какую сумму хотите привлечь, руб:</label>
+        <input type="number" id="loanAmount" value="50000000" oninput="calculateRoyalty()">
+    </div>
+    <div class="form-group">
+        <label>Доля от выручки к возврату инвестору (%):</label>
+        <input type="number" id="royaltyShare" value="10" step="0.1" oninput="calculateRoyalty()">
+    </div>
+    <div class="form-group">
+        <label>Соотношение (Тело займа + Премия) / Сумма займа:</label>
+        <input type="number" id="multiplier" value="1.7" step="0.1" oninput="calculateRoyalty()">
+    </div>
+    <div class="form-group">
+        <label>Средняя выручка в месяц, руб:</label>
+        <input type="number" id="monthlyRevenue" value="19447000" oninput="calculateRoyalty()">
+    </div>
+    <div class="form-group">
+        <label>Средняя маржинальность операций (%):</label>
+        <input type="number" id="marginShare" value="10" step="0.1" oninput="calculateRoyalty()">
+    </div>
+
+    <h3>Результат расчета</h3>
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th>Показатель</th>
+                <th style="text-align: right;">Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Общая сумма к возврату инвестору (руб)</td>
+                <td class="result-value" id="resTotalReturn">0.00</td>
+            </tr>
+            <tr>
+                <td>Размер ежемесячного платежа роялти (руб)</td>
+                <td class="result-value" id="resMonthlyPayment">0.00</td>
+            </tr>
+            <tr class="highlight">
+                <td>Срок возврата займа (месяцев)</td>
+                <td class="result-value" id="resPaybackPeriod">0.0</td>
+            </tr>
+            <tr class="highlight">
+                <td>Эффективная ставка (% годовых)</td>
+                <td class="result-value" id="resEffectiveRate">0.00%</td>
+            </tr>
+            <tr>
+                <td><strong>Проверка устойчивости:</strong> Доля от маржи к уплате</td>
+                <td class="result-value" id="resMarginLoad">0.00%</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr class="form-divider">
+
+<div class="consult-container">
+    <h3>Оставить заявку на финансирование</h3>
+    <p class="consult-text">
+        Хотите получить детальный инвестиционный анализ или привлечь финансирование по модели Роялти-Бондс? Нажмите на кнопку ниже, заполните короткую форму, и менеджер ООО «Альянс Кредиторов 30» свяжется с вами.
+    </p>
+    
+    <!-- ЗАМЕНИТЕ ССЫЛКУ НИЖЕ НА ВАШУ GOOGLE ФОРМУ ДЛЯ ЭТОГО КАЛЬКУЛЯТОРА -->
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdFHnWF1AIlmGej4ZoRVCyND7bUjH2678g5amC_D22karhGOw/viewform?usp=sharing&ouid=103852536800905050278" class="btn-consult">
+        Перейти к оформлению заявки
+    </a>
+</div>
+
+<script>
+function calculateRoyalty() {
+    // Получение данных
+    const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 0;
+    const royaltyShare = (parseFloat(document.getElementById('royaltyShare').value) || 0) / 100;
+    const multiplier = parseFloat(document.getElementById('multiplier').value) || 0;
+    const monthlyRevenue = parseFloat(document.getElementById('monthlyRevenue').value) || 0;
+    const marginShare = (parseFloat(document.getElementById('marginShare').value) || 0) / 100;
+
+    // Расчеты
+    const totalReturn = loanAmount * multiplier;
+    const monthlyPayment = monthlyRevenue * royaltyShare;
+    
+    let paybackPeriod = 0;
+    let effectiveRate = 0;
+    let marginLoad = 0;
+
+    if (monthlyPayment > 0) {
+        paybackPeriod = totalReturn / monthlyPayment;
+        
+        // Расчет эффективной годовой ставки по формуле простых процентов для роялти
+        if (paybackPeriod > 0) {
+            const totalPremiumRate = multiplier - 1; // Общая переплата в долях
+            const years = paybackPeriod / 12;
+            effectiveRate = (totalPremiumRate / years) * 100;
+        }
+    }
+
+    if (marginShare > 0) {
+        // Какую часть от чистой маржинальной прибыли бизнеса забирает инвестор ежемесячно
+        marginLoad = (royaltyShare / marginShare) * 100;
+    }
+
+    // Вывод результатов
+    document.getElementById('resTotalReturn').innerText = totalReturn.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('resMonthlyPayment').innerText = monthlyPayment.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('resPaybackPeriod').innerText = paybackPeriod.toFixed(1);
+    document.getElementById('resEffectiveRate').innerText = effectiveRate.toFixed(2) + '%';
+    document.getElementById('resMarginLoad').innerText = marginLoad.toFixed(2) + '%';
+}
+
+// Первый запуск при загрузке
+window.onload = calculateRoyalty;
+</script>
+
+</body>
+</html>
