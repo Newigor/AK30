@@ -339,11 +339,25 @@
 </div>
 
 <script>
-// Управление доступностью кнопки отправки
+// Управление доступностью кнопки отправки (чекбокс)
 function toggleOrderButton() {
     const checkbox = document.getElementById('policy_agree');
     const button = document.getElementById('btnSubmitOrder');
     button.disabled = !checkbox.checked;
+}
+
+// Функция проверки регулярных выражений для телефонов РБ и РФ
+function validatePhone(phone) {
+    // Удаляем все пробелы, дефисы и скобки для чистой проверки цифр
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    
+    // Регулярное выражение для РБ: +375XXXXXXXXX (всего 12 цифр)
+    const rbRegex = /^\+375\d{9}$/;
+    
+    // Регулярное выражение для РФ: +7XXXXXXXXXX (всего 11 цифр)
+    const rfRegex = /^\+7\d{10}$/;
+    
+    return rbRegex.test(cleanPhone) || rfRegex.test(cleanPhone);
 }
 
 // Обработка отправки формы на внешний сервер Google Apps Script
@@ -351,32 +365,36 @@ function submitOrderForm(event) {
     event.preventDefault();
     
     const button = document.getElementById('btnSubmitOrder');
+    const phoneInput = document.getElementById('usr_phone').value;
+
+    // 1. ПРОВЕРКА ТЕЛЕФОНА
+    if (!validatePhone(phoneInput)) {
+        alert("Неверный формат телефона!\nПожалуйста, введите номер в формате:\n+375 (XX) XXX-XX-XX или\n+7 (XXX) XXX-XX-XX");
+        return; // Останавливаем отправку
+    }
+    
     button.disabled = true;
     button.innerText = "Отправка...";
 
+    // Собираем данные клиента
     const orderData = {
         firstName: document.getElementById('usr_fname').value,
         lastName: document.getElementById('usr_lname').value,
         company: document.getElementById('usr_comp').value,
-        phone: document.getElementById('usr_phone').value,
+        phone: phoneInput,
         email: document.getElementById('usr_email').value
     };
 
-    // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ, ПОЛУЧЕННУЮ НА ШАГЕ 1 (ПОСЛЕ РАЗВЕРТЫВАНИЯ)
+    // ВСТАВЬТЕ СЮДА ВАШУ ССЫЛКУ НА ВЕБ-ПРИЛОЖЕНИЕ GOOGLE ИЗ ШАГА 1
     const googleWebAppUrl = "https://script.google.com/macros/s/AKfycbxFL0VbE15PObVX61xzXteE4qxwrPvDrsPAMUUSibKBNYEpKIhzffc3i46jqyoqeNeNtA/exec";
 
-    // Отправляем данные методом POST на сервер Google
-    fetch(googleWebAppUrl, {
+    // Для надежности отправки через no-cors кодируем данные как URL-параметры
+    fetch(googleWebAppUrl + "?data=" + encodeURIComponent(JSON.stringify(orderData)), {
         method: "POST",
-        mode: "no-cors", // Позволяет отправлять данные без жестких ограничений безопасности браузера
-        cache: "no-cache",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(orderData)
+        mode: "no-cors",
+        cache: "no-cache"
     })
     .then(function() {
-        // Так как режим 'no-cors' не возвращает текстовый ответ, мы сразу считаем отправку успешной
         alert("Спасибо, " + orderData.firstName + "! Ваша заявка успешно отправлена.");
         document.getElementById('finModelForm').reset();
         button.innerText = "Отправить заявку";
@@ -389,8 +407,6 @@ function submitOrderForm(event) {
     });
 }
 </script>
-<!-- КОНЕЦ БЛОКА: ФОРМА ЗАКАЗА ФИНАНСОВОЙ МОДЕЛИ -->
-
 
 <script>
 function calculateMezzanine() {
