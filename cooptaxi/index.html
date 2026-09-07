@@ -98,28 +98,309 @@
     </table>
 
     <a href="results.html" target="_blank" class="btn-link">Посмотреть сравнение результатов 📊</a>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сравнение результатов — Калькулятор такси</title>
+    <style>
+        :root { --primary-color: #2c3e50; --bg-color: #f8f9fa; --table-border: #dee2e6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; background-color: var(--bg-color); color: #333; padding: 20px; margin: 0; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: var(--primary-color); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--table-border); }
+        th { background-color: var(--primary-color); color: white; }
+        .text-right { text-align: right; }
+        tr:hover { background-color: #f1f3f5; }
+        .result-net { background-color: #d4edda !important; color: #155724; font-weight: bold; font-size: 16px; }
+        .notice { text-align: center; color: #7f8c8d; font-size: 13px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>2. Таблица для сравнения результатов (4 столбца)</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Показатель</th>
+                <th class="text-right">ИП на едином налоге</th>
+                <th class="text-right">ИП на подоходном налоге</th>
+                <th class="text-right">Участник кооператива</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Грязная выручка</td>
+                <td id="res_rev_1" class="text-right">0.00</td>
+                <td id="res_rev_2" class="text-right">0.00</td>
+                <td id="res_rev_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Агрегатору</td>
+                <td id="res_agg_1" class="text-right">0.00</td>
+                <td id="res_agg_2" class="text-right">0.00</td>
+                <td id="res_agg_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Аренда авто</td>
+                <td id="res_rent_1" class="text-right">0.00</td>
+                <td id="res_rent_2" class="text-right">0.00</td>
+                <td id="res_rent_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Топливо</td>
+                <td id="res_fuel_1" class="text-right">0.00</td>
+                <td id="res_fuel_2" class="text-right">0.00</td>
+                <td id="res_fuel_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Мойки</td>
+                <td id="res_wash_1" class="text-right">0.00</td>
+                <td id="res_wash_2" class="text-right">0.00</td>
+                <td id="res_wash_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Ремонты</td>
+                <td id="res_repair_1" class="text-right">0.00</td>
+                <td id="res_repair_2" class="text-right">0.00</td>
+                <td id="res_repair_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Каско</td>
+                <td id="res_kasko_1" class="text-right">0.00</td>
+                <td id="res_kasko_2" class="text-right">0.00</td>
+                <td id="res_kasko_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Комиссия парка</td>
+                <td id="res_park_1" class="text-right">0.00</td>
+                <td id="res_park_2" class="text-right">0.00</td>
+                <td id="res_park_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Взнос в ФСЗН</td>
+                <td id="res_fszn_1" class="text-right">0.00</td>
+                <td id="res_fszn_2" class="text-right">0.00</td>
+                <td id="res_fszn_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Единый налог</td>
+                <td id="res_stax_1" class="text-right">0.00</td>
+                <td id="res_stax_2" class="text-right">0.00</td>
+                <td id="res_stax_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Налог при УСН (6%)</td>
+                <td id="res_usn_1" class="text-right">0.00</td>
+                <td id="res_usn_2" class="text-right">0.00</td>
+                <td id="res_usn_3" class="text-right">0.00</td>
+            </tr>
+            <tr>
+                <td>Подоходный налог</td>
+                <td id="res_inc_1" class="text-right">0.00</td>
+                <td id="res_inc_2" class="text-right">0.00</td>
+                <td id="res_inc_3" class="text-right">0.00</td>
+            </tr>
+            <tr class="result-net">
+                <td>Чистый доход</td>
+                <td id="res_net_1" class="text-right">0.00</td>
+                <td id="res_net_2" class="text-right">0.00</td>
+                <td id="res_net_3" class="text-right">0.00</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="notice">Данные обновляются автоматически при изменении параметров на главной странице.</div>
+</div>
+
+
+</div>
+    <!-- Скопируйте текст ниже и замените им всё, что идет после первой таблицы -->
+    
+    <h2>2. Таблица для сравнения результатов (4 столбца)</h2>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Показатель</th>
+                    <th class="text-right">ИП на едином налоге</th>
+                    <th class="text-right">ИП на подоходном налоге</th>
+                    <th class="text-right">Участник кооператива</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Грязная выручка</td>
+                    <td id="res_rev_1" class="text-right">0.00</td>
+                    <td id="res_rev_2" class="text-right">0.00</td>
+                    <td id="res_rev_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Агрегатору</td>
+                    <td id="res_agg_1" class="text-right">0.00</td>
+                    <td id="res_agg_2" class="text-right">0.00</td>
+                    <td id="res_agg_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Аренда авто</td>
+                    <td id="res_rent_1" class="text-right">0.00</td>
+                    <td id="res_rent_2" class="text-right">0.00</td>
+                    <td id="res_rent_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Топливо</td>
+                    <td id="res_fuel_1" class="text-right">0.00</td>
+                    <td id="res_fuel_2" class="text-right">0.00</td>
+                    <td id="res_fuel_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Мойки</td>
+                    <td id="res_wash_1" class="text-right">0.00</td>
+                    <td id="res_wash_2" class="text-right">0.00</td>
+                    <td id="res_wash_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Ремонты</td>
+                    <td id="res_repair_1" class="text-right">0.00</td>
+                    <td id="res_repair_2" class="text-right">0.00</td>
+                    <td id="res_repair_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Каско</td>
+                    <td id="res_kasko_1" class="text-right">0.00</td>
+                    <td id="res_kasko_2" class="text-right">0.00</td>
+                    <td id="res_kasko_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Комиссия парка</td>
+                    <td id="res_park_1" class="text-right">0.00</td>
+                    <td id="res_park_2" class="text-right">0.00</td>
+                    <td id="res_park_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Взнос в ФСЗН</td>
+                    <td id="res_fszn_1" class="text-right">0.00</td>
+                    <td id="res_fszn_2" class="text-right">0.00</td>
+                    <td id="res_fszn_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Единый налог</td>
+                    <td id="res_stax_1" class="text-right">0.00</td>
+                    <td id="res_stax_2" class="text-right">0.00</td>
+                    <td id="res_stax_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Налог при УСН (6%)</td>
+                    <td id="res_usn_1" class="text-right">0.00</td>
+                    <td id="res_usn_2" class="text-right">0.00</td>
+                    <td id="res_usn_3" class="text-right">0.00</td>
+                </tr>
+                <tr>
+                    <td>Подоходный налог</td>
+                    <td id="res_inc_1" class="text-right">0.00</td>
+                    <td id="res_inc_2" class="text-right">0.00</td>
+                    <td id="res_inc_3" class="text-right">0.00</td>
+                </tr>
+                <tr class="result-net">
+                    <td>Чистый доход</td>
+                    <td id="res_net_1" class="text-right">0.00</td>
+                    <td id="res_net_2" class="text-right">0.00</td>
+                    <td id="res_net_3" class="text-right">0.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-    function updateData() {
-        const data = {
-            dirty_revenue: parseFloat(document.getElementById('dirty_revenue').value) || 0,
-            rent_auto: parseFloat(document.getElementById('rent_auto').value) || 0,
-            rent_coop: parseFloat(document.getElementById('rent_coop').value) || 0,
-            fuel: parseFloat(document.getElementById('fuel').value) || 0,
-            wash: parseFloat(document.getElementById('wash').value) || 0,
-            repairs: parseFloat(document.getElementById('repairs').value) || 0,
-            kasko: parseFloat(document.getElementById('kasko').value) || 0,
-            park_fee_pct: parseFloat(document.getElementById('park_fee_pct').value) || 0,
-            aggregator_fee_pct: parseFloat(document.getElementById('aggregator_fee_pct').value) || 0,
-            single_tax_rate: parseFloat(document.getElementById('single_tax_rate').value) || 0,
-            min_salary: parseFloat(document.getElementById('min_salary').value) || 0
-        };
-        // Сохраняем введенные данные в хранилище браузера
-        localStorage.setItem('taxi_calc_inputs', JSON.stringify(data));
+    function calculate() {
+        const dirty_revenue = parseFloat(document.getElementById('dirty_revenue').value) || 0;
+        const rent_auto = parseFloat(document.getElementById('rent_auto').value) || 0;
+        const fuel = parseFloat(document.getElementById('fuel').value) || 0;
+        const wash = parseFloat(document.getElementById('wash').value) || 0;
+        const repairs = parseFloat(document.getElementById('repairs').value) || 0;
+        const kasko = parseFloat(document.getElementById('kasko').value) || 0;
+        const park_fee_pct = (parseFloat(document.getElementById('park_fee_pct').value) || 0) / 100;
+        const aggregator_fee_pct = (parseFloat(document.getElementById('aggregator_fee_pct').value) || 0) / 100;
+        const drivers_count = parseFloat(document.getElementById('drivers_count').value) || 1;
+        const cars_count = parseFloat(document.getElementById('cars_count').value) || 1;
+        const single_tax_rate = parseFloat(document.getElementById('single_tax_rate').value) || 0;
+        const min_salary = parseFloat(document.getElementById('min_salary').value) || 0;
+
+        const aggregator_fee = dirty_revenue * aggregator_fee_pct;
+        const fszn = min_salary * 0.35;
+
+        // Вариант 1
+        const rent_1 = rent_auto;
+        const net_1 = dirty_revenue - aggregator_fee - rent_1 - fuel - wash - repairs - kasko - fszn - single_tax_rate;
+
+        // Вариант 2
+        const rent_2 = rent_auto;
+        const expenses_2 = aggregator_fee + rent_2 + fuel + wash + repairs + kasko + fszn;
+        const income_tax_2 = Math.max(0, (dirty_revenue - expenses_2) * 0.20);
+        const net_2 = dirty_revenue - expenses_2 - income_tax_2;
+
+        // Вариант 3 (Расчет аренды авто по формуле из K5)
+        const rent_3 = (rent_auto * cars_count) / drivers_count; 
+        const park_3 = dirty_revenue * park_fee_pct;
+        const usn_3 = dirty_revenue * 0.06;
+        const expenses_pre_3 = aggregator_fee + rent_3 + fuel + wash + repairs + kasko + park_3 + fszn + usn_3;
+        const income_tax_3 = Math.max(0, (dirty_revenue - expenses_pre_3) * 0.13);
+        const net_3 = dirty_revenue - expenses_pre_3 - income_tax_3;
+
+        // Вывод результатов на страницу
+        document.getElementById('res_rev_1').innerText = dirty_revenue.toFixed(2);
+        document.getElementById('res_agg_1').innerText = aggregator_fee.toFixed(2);
+        document.getElementById('res_rent_1').innerText = rent_1.toFixed(2);
+        document.getElementById('res_fuel_1').innerText = fuel.toFixed(2);
+        document.getElementById('res_wash_1').innerText = wash.toFixed(2);
+        document.getElementById('res_repair_1').innerText = repairs.toFixed(2);
+        document.getElementById('res_kasko_1').innerText = kasko.toFixed(2);
+        document.getElementById('res_park_1').innerText = "0.00";
+        document.getElementById('res_fszn_1').innerText = fszn.toFixed(2);
+        document.getElementById('res_stax_1').innerText = single_tax_rate.toFixed(2);
+        document.getElementById('res_usn_1').innerText = "0.00";
+        document.getElementById('res_inc_1').innerText = "0.00";
+        document.getElementById('res_net_1').innerText = net_1.toFixed(2);
+
+        document.getElementById('res_rev_2').innerText = dirty_revenue.toFixed(2);
+        document.getElementById('res_agg_2').innerText = aggregator_fee.toFixed(2);
+        document.getElementById('res_rent_2').innerText = rent_2.toFixed(2);
+        document.getElementById('res_fuel_2').innerText = fuel.toFixed(2);
+        document.getElementById('res_wash_2').innerText = wash.toFixed(2);
+        document.getElementById('res_repair_2').innerText = repairs.toFixed(2);
+        document.getElementById('res_kasko_2').innerText = kasko.toFixed(2);
+        document.getElementById('res_park_2').innerText = "0.00";
+        document.getElementById('res_fszn_2').innerText = fszn.toFixed(2);
+        document.getElementById('res_stax_2').innerText = "0.00";
+        document.getElementById('res_usn_2').innerText = "0.00";
+        document.getElementById('res_inc_2').innerText = income_tax_2.toFixed(2);
+        document.getElementById('res_net_2').innerText = net_2.toFixed(2);
+
+        document.getElementById('res_rev_3').innerText = dirty_revenue.toFixed(2);
+        document.getElementById('res_agg_3').innerText = aggregator_fee.toFixed(2);
+        document.getElementById('res_rent_3').innerText = rent_3.toFixed(2);
+        document.getElementById('res_fuel_3').innerText = fuel.toFixed(2);
+        document.getElementById('res_wash_3').innerText = wash.toFixed(2);
+        document.getElementById('res_repair_3').innerText = repairs.toFixed(2);
+        document.getElementById('res_kasko_3').innerText = kasko.toFixed(2);
+        document.getElementById('res_park_3').innerText = park_3.toFixed(2);
+        document.getElementById('res_fszn_3').innerText = fszn.toFixed(2);
+        document.getElementById('res_stax_3').innerText = "0.00";
+        document.getElementById('res_usn_3').innerText = usn_3.toFixed(2);
+        document.getElementById('res_inc_3').innerText = income_tax_3.toFixed(2);
+        document.getElementById('res_net_3').innerText = net_3.toFixed(2);
     }
-    // Инициализация при первой загрузке
-    window.onload = updateData;
+
+    // Привязываем вызов функции к изменению полей (для динамического обновления)
+    document.querySelectorAll('input').forEach(input => {
+        input.setAttribute('oninput', 'calculate()');
+    });
+
+    window.onload = calculate;
 </script>
 </body>
 </html>
