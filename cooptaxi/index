@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Исходные данные — Калькулятор такси</title>
+    <style>
+        :root { --primary-color: #2c3e50; --bg-color: #f8f9fa; --table-border: #dee2e6; }
+        body { font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; background-color: var(--bg-color); color: #333; padding: 20px; margin: 0; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: var(--primary-color); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--table-border); }
+        th { background-color: var(--primary-color); color: white; }
+        input[type="number"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input[type="number"]:focus { border-color: var(--primary-color); outline: none; background-color: #fffbe6; }
+        .unit-cell { color: #6c757d; font-size: 13px; }
+        .btn-link { display: block; text-align: center; margin-top: 20px; padding: 12px; background: #27ae60; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .btn-link:hover { background: #219653; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚕 Калькулятор дохода таксиста</h1>
+    <h2>1. Таблица для ввода исходных данных</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Наименование параметра</th>
+                <th>Ед. изм.</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Грязная выручка за месяц</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="dirty_revenue" value="5500" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Аренда/лизинг авто за месяц (для ИП)</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="rent_auto" value="1500" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Аренда авто для Участника кооператива</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="rent_coop" value="900" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Топливо</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="fuel" value="400" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Мойки</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="wash" value="100" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Ремонты</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="repairs" value="100" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Каско</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="kasko" value="100" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Комиссия парка</td>
+                <td class="unit-cell">% от грязной выручки</td>
+                <td><input type="number" id="park_fee_pct" value="10" step="0.1" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Комиссия агрегатора</td>
+                <td class="unit-cell">% от грязной выручки</td>
+                <td><input type="number" id="aggregator_fee_pct" value="24" step="0.1" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Количество водителей в парке</td>
+                <td class="unit-cell">человек</td>
+                <td><input type="number" id="drivers_count" value="5" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Количество машин в парке</td>
+                <td class="unit-cell">штук</td>
+                <td><input type="number" id="cars_count" value="3" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Единый налог для города</td>
+                <td class="unit-cell">бел.руб/месяц</td>
+                <td><input type="number" id="single_tax_rate" value="400" oninput="updateData()"></td>
+            </tr>
+            <tr>
+                <td>Минимальная зарплата (для ФСЗН)</td>
+                <td class="unit-cell">бел.руб</td>
+                <td><input type="number" id="min_salary" value="858" oninput="updateData()"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="results.html" target="_blank" class="btn-link">Посмотреть сравнение результатов 📊</a>
+</div>
+
+<script>
+    function updateData() {
+        const data = {
+            dirty_revenue: parseFloat(document.getElementById('dirty_revenue').value) || 0,
+            rent_auto: parseFloat(document.getElementById('rent_auto').value) || 0,
+            rent_coop: parseFloat(document.getElementById('rent_coop').value) || 0,
+            fuel: parseFloat(document.getElementById('fuel').value) || 0,
+            wash: parseFloat(document.getElementById('wash').value) || 0,
+            repairs: parseFloat(document.getElementById('repairs').value) || 0,
+            kasko: parseFloat(document.getElementById('kasko').value) || 0,
+            park_fee_pct: parseFloat(document.getElementById('park_fee_pct').value) || 0,
+            aggregator_fee_pct: parseFloat(document.getElementById('aggregator_fee_pct').value) || 0,
+            single_tax_rate: parseFloat(document.getElementById('single_tax_rate').value) || 0,
+            min_salary: parseFloat(document.getElementById('min_salary').value) || 0
+        };
+        // Сохраняем введенные данные в хранилище браузера
+        localStorage.setItem('taxi_calc_inputs', JSON.stringify(data));
+    }
+    // Инициализация при первой загрузке
+    window.onload = updateData;
+</script>
+</body>
+</html>
